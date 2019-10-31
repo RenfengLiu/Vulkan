@@ -76,6 +76,7 @@ private:
 protected:
 	// Frame counter to display fps
 	uint32_t frameCounter = 0;
+	uint64_t frameNumber = 0;
 	uint32_t lastFPS = 0;
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastTimestamp;
 	// Vulkan instance, stores all per-application states

@@ -190,6 +190,7 @@ void VulkanExampleBase::nextFrame()
 
 	render();
 	frameCounter++;
+	frameNumber++;
 	auto tEnd = std::chrono::high_resolution_clock::now();
 	auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 	frameTimer = (float)tDiff / 1000.0f;
@@ -292,6 +293,7 @@ void VulkanExampleBase::renderLoop()
 			auto tStart = std::chrono::high_resolution_clock::now();
 			render();
 			frameCounter++;
+			frameNumber++;
 			auto tEnd = std::chrono::high_resolution_clock::now();
 			auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 			frameTimer = tDiff / 1000.0f;
@@ -376,6 +378,7 @@ void VulkanExampleBase::renderLoop()
 		}
 		render();
 		frameCounter++;
+		frameNumber++;
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = tDiff / 1000.0f;
@@ -422,6 +425,7 @@ void VulkanExampleBase::renderLoop()
 
 		render();
 		frameCounter++;
+		frameNumber++;
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = tDiff / 1000.0f;
@@ -464,13 +468,33 @@ void VulkanExampleBase::renderLoop()
 			viewChanged();
 		}
 		xcb_generic_event_t *event;
-		while ((event = xcb_poll_for_event(connection)))
+		// static int32_t change = 0;
+		// static int a = 0;
+		// int32_t dx = 0;
+		// int32_t dy = 0;
+		// if (change++ % 2  == 0) {
+		// 	a = rand() % 100;
+		// 	dx = -a;
+		// 	dy = -a;
+		// 	mouseButtons.left = true;
+		// 	// mouseButtons.right = true;
+		// } else {
+		// 	dx = a;
+		// 	dy = a;
+		// 	mouseButtons.left = true;
+		// 	// mouseButtons.right = true;
+		// }
+
+		// handleMouseMove(mousePos.x + dx, mousePos.y + dy);
+
+        while ((event = xcb_poll_for_event(connection)))
 		{
 			handleEvent(event);
 			free(event);
 		}
 		render();
 		frameCounter++;
+		frameNumber++;
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = tDiff / 1000.0f;
@@ -534,6 +558,8 @@ void VulkanExampleBase::updateOverlay()
 	ImGui::TextUnformatted(title.c_str());
 	ImGui::TextUnformatted(deviceProperties.deviceName);
 	ImGui::Text("%.2f ms/frame (%.1d fps)", (1000.0f / lastFPS), lastFPS);
+	ImGui::Text("Frame %d", frameCounter);
+	ImGui::Text("Total frame %d", frameNumber);
 
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 5.0f * UIOverlay.scale));
@@ -1824,6 +1850,7 @@ void VulkanExampleBase::initxcbConnection()
 
 void VulkanExampleBase::handleEvent(const xcb_generic_event_t *event)
 {
+
 	switch (event->response_type & 0x7f)
 	{
 	case XCB_CLIENT_MESSAGE:
@@ -2160,6 +2187,7 @@ void VulkanExampleBase::windowResize()
 
 void VulkanExampleBase::handleMouseMove(int32_t x, int32_t y)
 {
+	// std::cout << "in handle mouse move";
 	int32_t dx = (int32_t)mousePos.x - x;
 	int32_t dy = (int32_t)mousePos.y - y;
 
